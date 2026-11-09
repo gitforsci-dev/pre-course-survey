@@ -64,7 +64,9 @@ With the app running, from this folder:
 Rscript tests/clickthrough.R
 ```
 
-The script uses chromote (headless Chrome). It checks that every page loads without duplicate ids, that the follow-up fields appear only for their answers and block Next only while visible, that the consent page blocks without the box, that bad email addresses and usernames are refused, that "none" together with other picks is refused, and that one full test response reaches the end page and lands in `preview_data.csv` without IP address or browser columns.
+The script uses chromote (headless Chrome) and is tuned to preview mode. It checks that every page loads without duplicate ids, that the follow-up fields appear only for their answers and block Next only while visible, that the consent page blocks without the box, that bad email addresses and usernames are refused, that "none" together with other picks is refused, and that one full test response reaches the end page and lands in `preview_data.csv` without IP address or browser columns.
+
+For database mode, `Rscript tests/smoke_database.R [url] [email]` walks the happy path once with long waits (the first database session is slow while surveydown adds the columns). It is the test response of step 3 below and the live check of step 7.
 
 ## Database and deployment: steps for Lars
 
@@ -83,7 +85,7 @@ These steps need Lars's own accounts. Steps 6 and 7 are the procedure for every 
 
    `.env` is git-ignored and never leaves the machine. `app.R` sets `PGSSLMODE=require` itself, so every connection uses TLS, also on Connect Cloud.
 2. **Database mode.** Set `mode: database` in the `survey.qmd` YAML header.
-3. **Test response.** Run the app locally once and send one full test response with the address `test@example.org`. surveydown creates the table, adds the columns on first use and turns on row level security. The admin scripts drop that address on pull; delete the row in Supabase when the live check is done too.
+3. **Test response.** Run the app locally once and send one full test response with the address `test@example.org` (`Rscript tests/smoke_database.R`). surveydown creates the table, adds the columns on first use and turns on row level security. The admin scripts drop that address on pull; delete the row in Supabase when the live check is done too.
 4. **Read-only role.** In `gitforsci-dev/admin`, run `R/setup_readonly_role.R` with `SURVEY_ENV` pointing at this `.env`, so the admin scripts read the table through a read-only role.
 5. **Connect Cloud login.** Once, in your own R console: `rsconnect::connectCloudUser()`.
 6. **Deploy.** From a terminal, with Quarto exported:
