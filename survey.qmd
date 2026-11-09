@@ -69,7 +69,7 @@ steps_date    <- "Monday, 16 November 2026"
 website_url   <- "https://gitforsci-rdc.github.io/website/"
 instructor    <- "Lars Schöbitz"
 organiser     <- "Global Health Engineering, ETH Zurich"
-contact       <- "lars.schoebitz@ethz.ch"
+contact       <- "lschoebitz@ethz.ch"
 delete_by     <- "20 November 2027"
 ```
 
@@ -79,7 +79,7 @@ delete_by     <- "20 November 2027"
 
 Thank you for joining the workshop "`r workshop_name`" at the `r event`, on `r workshop_date`.
 
-This survey is step 1 of the pre-course work. It takes about eight minutes. Please complete it by `r survey_due`.
+This survey is step 1 of the pre-course work. It takes 10 to 15 minutes. Please complete it by `r survey_due`.
 
 Your answers decide which software we use for the hands-on part, and they shape the day. The setup instructions follow on the workshop website on `r steps_date`: [`r website_url`](`r website_url`)
 

@@ -6,7 +6,7 @@ First iteration that uses it: `gitforsci-rdc`, the 120 minute workshop at the Re
 
 ## What the survey asks
 
-English, about eight minutes, 22 required questions on six pages and 2 optional ones (`ai_tools`, `teaching_context`). Consent comes first, so a session that is abandoned later stores no email address without it.
+English, 10 to 15 minutes, 22 required questions on six pages and 2 optional ones (`ai_tools`, `teaching_context`). Consent comes first, so a session that is abandoned later stores no email address without it.
 
 | Page | Question id | Question | Source |
 |---|---|---|---|
