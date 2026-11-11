@@ -1,0 +1,41 @@
+/*-- scss:defaults --*/
+
+// Palette and font of the Git for Scientists website template
+// (gitforsci-dev/website, _brand.yml): GHE blue and gray on paper.
+
+@import 'https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap';
+
+$font-family-sans-serif: "Atkinson Hyperlegible", sans-serif;
+$font-family-base: $font-family-sans-serif;
+// litera sets paragraph text in a serif face. Question labels are paragraphs.
+$font-family-serif: $font-family-sans-serif;
+
+$gf-blue: #0F4C81;
+$gf-gray: #5c5751;
+
+$body-color: #1e1e1e;
+$body-bg: #f4f4f4;
+$primary: $gf-blue;
+$secondary: $gf-gray;
+$link-color: $gf-blue;
+
+/*-- scss:rules --*/
+
+// surveydown loads its stylesheet after this one, so overrides carry one
+// extra class of specificity.
+html:root {
+  --body-background-color: #{$body-bg};
+}
+
+h1, h2, h3 {
+  color: $gf-blue;
+}
+
+.question-container .form-group {
+  background-color: #ffffff;
+  border-color: #dddddd;
+}
+
+.footer {
+  color: $gf-gray;
+}

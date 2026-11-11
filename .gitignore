@@ -1,0 +1,27 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+
+# surveydown: rendered cache
+_survey/
+survey.html
+survey_files/
+
+# surveydown: responses are personal data and never enter git
+preview_data.csv
+local_data.csv
+
+# credentials and machine-specific settings
+.env
+.Renviron
+
+# deployment records
+rsconnect/
+
+/.quarto/
+**/*.quarto_ipynb
+
+# RStudio project file, local
+*.Rproj

@@ -1,0 +1,426 @@
+---
+# Survey configuration.
+# All available settings are documented at https://surveydown.org
+# and listed in _survey/settings.yml after the first render.
+#
+# Built after gitklar-dev/pre-course-survey and agentsforsci-dev/pre-course-survey
+# (2026-11-09). Course Git for Scientists, iteration gitforsci-rdc (Research
+# Data Conference 2026, Bern).
+
+theme-settings:
+  theme: [litera, custom.scss]
+  barposition: top
+  barcolor: "#0F4C81"
+  footer-left: "Lars Schöbitz, Global Health Engineering, ETH Zurich. Made with [surveydown](https://surveydown.org), licensed [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)"
+  footer-right: "[Source code](https://github.com/gitforsci-dev/pre-course-survey)"
+
+survey-settings:
+  # "preview" saves test answers to preview_data.csv (git-ignored).
+  # Switch to "database" only after the Supabase table is set up (README).
+  mode: database
+  show-previous: true
+  use-cookies: true
+  auto-scroll: false
+  rate-survey: false
+  system-language: en
+  highlight-unanswered: false
+  highlight-color: blue
+  # false: no browser string and no IP address are stored with a response
+  capture-metadata: false
+  # Questions are listed one by one rather than with all-required, so that
+  # text fields shown with sd_show_if() are only enforced while visible
+  # (see the surveydown gotchas), and the matrix prog is listed by its
+  # parent id. ai_tools and teaching_context are optional.
+  all-required: false
+  required:
+    - consent
+    - email
+    - github_account
+    - github_username
+    - github_username_new
+    - os
+    - os_other
+    - install_rights
+    - role
+    - role_other
+    - teaches_git
+    - rdm_level
+    - rdm_level_other
+    - rdm_activities
+    - installed
+    - git_today
+    - preferred_setup
+    - ai_tools_other
+    - prog
+    - cli_usage
+    - git_experience
+    - learning_goals
+---
+
+```{r}
+library(surveydown)
+
+# Cohort values. Edit these for the next iteration of the workshop.
+workshop_name <- "Git for Scientists"
+event         <- "Research Data Conference 2026 in Bern"
+workshop_date <- "Friday, 20 November 2026, 09:30 to 11:30"
+survey_due    <- "Friday, 13 November 2026"
+steps_date    <- "Monday, 16 November 2026"
+website_url   <- "https://gitforsci-rdc.github.io/website/"
+instructor    <- "Lars Schöbitz"
+organiser     <- "Global Health Engineering, ETH Zurich"
+contact       <- "lschoebitz@ethz.ch"
+delete_by     <- "20 November 2027"
+```
+
+--- start
+
+# `r workshop_name` at RDC 2026: pre-course survey
+
+Thank you for joining the workshop "`r workshop_name`" at the `r event`, on `r workshop_date`.
+
+This survey is step 1 of the pre-course work. It takes 10 to 15 minutes. Please complete it by `r survey_due`.
+
+Your answers decide which software we use for the hands-on part, and they shape the day. The setup instructions follow on the workshop website on `r steps_date`: [`r website_url`](`r website_url`)
+
+Questions? Write to `r contact`.
+
+`r instructor`, `r organiser`
+
+--- agreement
+
+## Your consent
+
+```{r}
+sd_question(
+  type   = "mc",
+  id     = "consent",
+  label  = paste0(
+    "I agree that my answers, my email address and my GitHub username are used to plan and run this workshop. ",
+    "Only the course instructor has access to them. The survey runs on Posit Connect Cloud, the answers are stored in a database in Zurich (Supabase), ",
+    "and they are shared with no one else. ",
+    "My GitHub username is used to invite me to the course organisation on GitHub. ",
+    "My email address is used only for this workshop and deleted at the latest one year after the conference (", delete_by, "). ",
+    "Without email address and username, the answers may be used to improve the workshop and in reports about it; ",
+    "only aggregated results are published, never individual answers. ",
+    "I can withdraw my consent at any time by email to ", contact, "."
+  ),
+  option = c("Yes, I agree" = "yes")
+)
+```
+
+--- about
+
+## About you
+
+```{r}
+sd_question(
+  type  = "text",
+  id    = "email",
+  label = paste0(
+    "Your email address<br>",
+    "*I use it to send you the setup instructions on ", steps_date, ", and for nothing else.*"
+  )
+)
+
+sd_question(
+  type   = "mc",
+  id     = "github_account",
+  label  = "Do you have a GitHub account?",
+  option = c(
+    "Yes"          = "yes",
+    "No"           = "no",
+    "I don't know" = "dont_know"
+  )
+)
+
+sd_question(
+  type  = "text",
+  id    = "github_username",
+  label = "Your GitHub username<br>*Without the @. You find it at the top right of github.com when you are signed in.*"
+)
+
+# Shown for "No" and "I don't know": the account is created during the
+# survey, so every respondent leaves a username behind.
+sd_question(
+  type  = "text",
+  id    = "github_username_new",
+  label = paste0(
+    "**Create your GitHub account now and enter the username here.**<br>",
+    "*I invite you to the course organisation on GitHub before the workshop, so I need your username. It takes about five minutes. ",
+    "Not sure whether you already have an account? Try to sign in first at ",
+    "<a href='https://github.com/login' target='_blank'>github.com/login</a>. ",
+    "If it works, enter the name shown at the top right.*<br>",
+    "1. Open <a href='https://github.com/signup' target='_blank'>github.com/signup</a> in a new tab.<br>",
+    "2. Enter an email address you will keep and choose a password.<br>",
+    "3. Choose a username made of letters, digits and hyphens, no spaces. ",
+    "It is public, for example in the address of your projects. Many people use firstname-lastname.<br>",
+    "4. Confirm your email address with the code GitHub sends you.<br>",
+    "5. Come back here and enter the username below, without the @.<br>",
+    "*No time right now? Leave this window open or come back later in the same browser. Your answers so far stay saved.*"
+  )
+)
+
+sd_question(
+  type   = "mc",
+  id     = "os",
+  label  = "Which operating system is on the laptop you bring to the workshop?",
+  option = c(
+    "macOS (Apple)" = "macos",
+    "Windows"       = "windows",
+    "Linux"         = "linux",
+    "Another one"   = "other",
+    "I don't know"  = "dont_know"
+  )
+)
+
+sd_question(
+  type  = "text",
+  id    = "os_other",
+  label = "Which other operating system?"
+)
+
+sd_question(
+  type   = "mc",
+  id     = "install_rights",
+  label  = "Can you install software on that laptop yourself?<br>*For example R, RStudio or GitHub Desktop, without asking your IT department.*",
+  option = c(
+    "Yes"                                   = "yes",
+    "No, our IT department installs software for me" = "no_it",
+    "I don't know"                          = "dont_know"
+  )
+)
+
+sd_question(
+  type   = "mc",
+  id     = "role",
+  label  = "What is your role?",
+  option = c(
+    "Data steward or research data manager" = "data_steward",
+    "Research software engineer"            = "rse",
+    "Librarian"                             = "librarian",
+    "Researcher"                            = "researcher",
+    "Lecturer or trainer"                   = "trainer",
+    "IT"                                    = "it",
+    "Another role"                          = "other"
+  )
+)
+
+sd_question(
+  type  = "text",
+  id    = "role_other",
+  label = "Which other role?"
+)
+
+sd_question(
+  type   = "mc",
+  id     = "teaches_git",
+  label  = "Do you teach Git and GitHub, or plan to?",
+  option = c(
+    "Yes, I teach it"       = "teach",
+    "I plan to"             = "plan",
+    "No"                    = "no"
+  )
+)
+```
+
+--- rdm
+
+## Your work with research data
+
+```{r}
+sd_question(
+  type   = "mc",
+  id     = "rdm_level",
+  label  = "Where does your work with research data sit?",
+  option = c(
+    "Embedded in one research group (a data steward or similar role inside the group)" = "group",
+    "A service for one department or institute (several research groups)"              = "department",
+    "A central service of the institution (library, IT, research support office)"      = "central",
+    "Across institutions (a network, a national service, an infrastructure provider)"  = "cross_institution",
+    "Informal: I help colleagues with their data, it is not my role"                   = "informal",
+    "I am a researcher managing my own data"                                           = "own_data",
+    "Somewhere else"                                                                   = "other"
+  )
+)
+
+sd_question(
+  type  = "text",
+  id    = "rdm_level_other",
+  label = "Where else?"
+)
+
+sd_question(
+  type   = "mc_multiple",
+  id     = "rdm_activities",
+  label  = "Which of these are part of your work with research data? (several answers possible)",
+  option = c(
+    "Data management plans"                  = "dmp",
+    "Training and courses"                   = "training",
+    "One to one consulting"                  = "consulting",
+    "Data publishing and repositories"       = "publishing",
+    "Documentation and curation"             = "curation",
+    "Metadata and standards"                 = "metadata",
+    "Storage and infrastructure"             = "infrastructure",
+    "Policy and strategy"                    = "policy",
+    "Software and tooling"                   = "software",
+    "None of these"                          = "none"
+  )
+)
+```
+
+--- tools
+
+## Your tools today
+
+```{r}
+sd_question(
+  type   = "mc_multiple",
+  id     = "installed",
+  label  = "Which of these are installed on the laptop you bring? (several answers possible)",
+  option = c(
+    "R"                        = "r",
+    "RStudio"                  = "rstudio",
+    "Positron"                 = "positron",
+    "Visual Studio Code"       = "vscode",
+    "Git on the command line"  = "git_cli",
+    "GitHub Desktop"           = "github_desktop",
+    "Python"                   = "python",
+    "None of these"            = "none",
+    "I don't know"             = "dont_know"
+  )
+)
+
+sd_question(
+  type   = "mc_multiple",
+  id     = "git_today",
+  label  = "How do you work with Git today, if at all? (several answers possible)",
+  option = c(
+    "On the command line"             = "cli",
+    "In the RStudio Git pane"         = "rstudio_pane",
+    "In GitHub Desktop"               = "github_desktop",
+    "In Visual Studio Code"           = "vscode",
+    "In another Git app (for example GitKraken, Sourcetree)" = "other_app",
+    "Only on the GitHub website"      = "web_only",
+    "Not at all"                      = "not_at_all"
+  )
+)
+
+sd_question(
+  type   = "mc",
+  id     = "preferred_setup",
+  label  = paste0(
+    "If the choice were yours, which setup would you prefer for the hands-on part?<br>",
+    "*Each has its own pre-work. RStudio with Git needs R, RStudio and Git installed. ",
+    "GitHub Desktop needs one app and no R. ",
+    "Positron is Posit's new editor; it needs R, Positron and Git.*"
+  ),
+  option = c(
+    "RStudio with Git"  = "rstudio",
+    "GitHub Desktop"    = "github_desktop",
+    "Positron"          = "positron",
+    "No preference"     = "no_preference"
+  )
+)
+
+sd_question(
+  type   = "mc_multiple",
+  id     = "ai_tools",
+  label  = "Which AI tools have you used? (several answers possible, optional)",
+  option = c(
+    "ChatGPT (OpenAI)"                                  = "chatgpt",
+    "Codex (OpenAI)"                                    = "codex",
+    "Claude (Anthropic)"                                = "claude",
+    "Claude Code (Anthropic)"                           = "claude_code",
+    "Gemini (Google)"                                   = "gemini",
+    "Microsoft Copilot (in Windows, Edge, Teams or Microsoft 365)" = "copilot_365",
+    "GitHub Copilot (in VS Code, RStudio or Positron)"  = "copilot_ide",
+    "Cursor"                                            = "cursor",
+    "Positron Assistant"                                = "positron_assistant",
+    "Local models (for example Ollama, LM Studio)"      = "local_models",
+    "Other"                                             = "other",
+    "None of the above"                                 = "none"
+  )
+)
+
+sd_question(
+  type  = "text",
+  id    = "ai_tools_other",
+  label = "Other AI tool (please specify):"
+)
+```
+
+--- experience
+
+## Your experience
+
+```{r}
+sd_question(
+  type   = "matrix",
+  id     = "prog",
+  label  = "How much programming experience do you have?",
+  row    = c(
+    "Programming in general" = "general",
+    "Programming in R"       = "r",
+    "Programming in Python"  = "python"
+  ),
+  option = c(
+    "I have none"                                   = "none",
+    "I have written a few lines"                    = "few_lines",
+    "I have written programs for my own use"        = "own_use",
+    "I have written and maintained larger software" = "maintained"
+  )
+)
+
+sd_question(
+  type   = "mc",
+  id     = "cli_usage",
+  label  = "Which of these best describes your use of the command line?<br>*On a Mac the app is called Terminal. On Windows it is Windows Terminal or PowerShell.*",
+  option = c(
+    "I have never used the command line."                                                       = "never",
+    "Occasionally, for basic tasks (for example copying a command from an instruction)."         = "occasional",
+    "Regularly, for my own projects, including scripts."                                        = "regular",
+    "Extensively, for advanced workflows (for example SSH, environments, custom scripts)."      = "extensive"
+  )
+)
+
+sd_question(
+  type   = "mc",
+  id     = "git_experience",
+  label  = "Which of these best describes your experience with Git?<br>*Git records every version of your files, so that you can trace and undo changes.*",
+  option = c(
+    "I have never used Git"                    = "never",
+    "Occasionally, for first steps"            = "occasional",
+    "Regularly, for my own projects"           = "regular",
+    "Extensively, also together with others"   = "extensive"
+  )
+)
+```
+
+--- goals
+
+## Your goals for the workshop
+
+```{r}
+sd_question(
+  type  = "textarea",
+  id    = "learning_goals",
+  label = "What do you want to know or be able to do after this workshop that you don't know or can't do right now?"
+)
+
+sd_question(
+  type  = "textarea",
+  id    = "teaching_context",
+  label = "If you teach or plan to teach Git and GitHub: who are your learners, and in which setting? (optional)<br>*The second half of the workshop looks at the material through an educator's eyes. Your answer helps me prepare that part.*"
+)
+```
+
+--- end
+
+## Thank you
+
+Your answers are saved. The setup instructions appear on the workshop website on `r steps_date`: [`r website_url`](`r website_url`). I also send them to the email address you gave. You can close this window now.
+
+```{r}
+sd_close()
+```
